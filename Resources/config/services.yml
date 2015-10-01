@@ -1,0 +1,4 @@
+services:
+    sis_sms:
+        class: SmartInformationSystems\SmsBundle\Service\Sms
+        arguments: ["@service_container", "@templating"]

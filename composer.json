@@ -1,0 +1,27 @@
+{
+    "name" : "SmartInformationSystems/sms-bundle",
+    "description" : "Sms bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "YK115",
+        "email" : "info@smart-systems.ru"
+    }],
+    "keywords" : [
+        "sms"
+    ],
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+    },
+    "autoload" : {
+        "psr-0" : { "SmartInformationSystems\\SmsBundle" : "" }
+    },
+    "target-dir" : "SmartInformationSystems/SmsBundle",
+    "extra" : {
+        "branch-alias" : {
+            "dev-master" : "1.0-dev"
+        }
+    }
+}
+
