@@ -4,6 +4,7 @@ namespace SmartInformationSystems\SmsBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Templating\EngineInterface;
+use Doctrine\ORM\EntityManager;
 
 use SmartInformationSystems\SmsBundle\Entity\Sms as SmsEntity;
 
@@ -45,8 +46,10 @@ class Sms
                 )
             );
 
-        $this->container->get('doctrine')->persist($sms);
-        $this->container->get('doctrine')->flush($sms);
+        /** @var EntityManager $em */
+        $em = $this->container->get('doctrine')->getEntityManager();
+        $em->persist($sms);
+        $em->flush($sms);
 
         return $sms->getId();
     }
