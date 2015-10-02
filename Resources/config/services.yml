@@ -1,3 +1,6 @@
+parameters:
+    # params
+
 services:
     smart_information_systems_sms.transport.configuration_container:
         class: SmartInformationSystems\SmsBundle\Transport\ConfigurationContainer
