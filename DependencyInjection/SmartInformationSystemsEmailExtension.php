@@ -24,5 +24,8 @@ class SmartInformationSystemsSmsExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        $configurationContainer = $container->getDefinition('smart_information_systems_sms.transport.configuration_container');
+        $configurationContainer->addMethodCall('setConfig', array($config));
     }
 }

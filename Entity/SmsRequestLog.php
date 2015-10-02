@@ -5,22 +5,13 @@ namespace SmartInformationSystems\SmsBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Смс в очереди на отправку.
+ * Лог обращения к транспорту.
  *
  * @ORM\Entity
- * @ORM\Table(
- *   name="sis_sms",
- *   indexes={
- *     @ORM\Index(name="i_sent", columns={"is_sent"}),
- *     @ORM\Index(name="i_phone", columns={"phone"})
- *   },
- *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="ui_transport_external_id", columns={"transport", "external_id"})
- *   }
- * )
+ * @ORM\Table(name="sis_sms_request_log")
  * @ORM\HasLifecycleCallbacks()
  */
-class Sms
+class SmsRequestLog
 {
     /**
      * Идентификатор.
@@ -34,7 +25,17 @@ class Sms
     private $id;
 
     /**
-     * Тип транспорта.
+     * Смс.
+     *
+     * @var Sms
+     *
+     * @ORM\ManyToOne(targetEntity="Sms")
+     * @ORM\JoinColumn(name="sms_id", referencedColumnName="id", nullable=true)
+     */
+    private $sms;
+
+    /**
+     * Транспорт.
      *
      * @var string
      *
@@ -43,49 +44,40 @@ class Sms
     private $transport;
 
     /**
-     * Идентификатор в транспорте.
+     * Запрос.
      *
      * @var string
      *
-     * @ORM\Column(name="external_id", type="string", length=255, nullable=false)
+     * @ORM\Column(type="text", nullable=false)
      */
-    private $externalId;
+    private $request;
 
     /**
-     * Телефон получателя.
+     * Дата запроса.
+     *
+     * @var \DateTime
+     *
+     * @ORM\Column(name="request_at", type="datetime", nullable=false)
+     */
+    private $requestAt;
+
+    /**
+     * Ответ.
      *
      * @var string
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $phone;
+    private $response;
 
     /**
-     * Сообщение.
+     * Дата ответа.
      *
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(name="response_at", type="datetime", nullable=true)
      */
-    private $message;
-
-    /**
-     * Имя отправителя.
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=false, name="from_name")
-     */
-    private $fromName;
-
-    /**
-     * Отправлено ли.
-     *
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", name="is_sent")
-     */
-    private $isSent;
+    private $responseAt;
 
     /**
      * Дата создания.
@@ -106,23 +98,12 @@ class Sms
     private $updatedAt;
 
     /**
-     * Дата отправки.
-     *
-     * @var \DateTime
-     *
-     * @ORM\Column(name="sent_at", type="datetime", nullable=true)
-     */
-    private $sentAt;
-
-    /**
      * Конструктор.
      *
      */
     public function __construct()
     {
-        $this->isSent = FALSE;
     }
-
 
     /**
      * Возвращает идентификатор.
@@ -135,27 +116,27 @@ class Sms
     }
 
     /**
-     * Устанавливает телефон получателя.
+     * Устанавливает смс.
      *
-     * @param string $phone Телефон получателя
+     * @param Sms $sms
      *
-     * @return Sms
+     * @return SmsRequestLog
      */
-    public function setPhone($phone)
+    public function setSms(Sms $sms = NULL)
     {
-        $this->phone = $phone;
+        $this->sms = $sms;
 
         return $this;
     }
 
     /**
-     * Возвращает телефон получателя.
+     * Возвращает смс.
      *
-     * @return string
+     * @return Sms
      */
-    public function getPhone()
+    public function getSms()
     {
-        return $this->phone;
+        return $this->sms;
     }
 
     /**
@@ -163,7 +144,7 @@ class Sms
      *
      * @param string $transport
      *
-     * @return Sms
+     * @return SmsRequestLog
      */
     public function setTransport($transport)
     {
@@ -183,98 +164,99 @@ class Sms
     }
 
     /**
-     * Устанавливает идентификатор в транспорте.
+     * Устанавливает запрос.
      *
-     * @param string $externalId
+     * @param string $request
      *
-     * @return Sms
+     * @return SmsRequestLog
      */
-    public function setExternalId($externalId)
+    public function setRequest($request)
     {
-        $this->externalId = $externalId;
+        $this->request = $request;
 
         return $this;
     }
 
     /**
-     * Возвращает идентификатор в транспорте.
+     * Возвращает запрос.
      *
      * @return string
      */
-    public function getExternalId()
+    public function getRequest()
     {
-        return $this->externalId;
+        return $this->request;
     }
+
     /**
-     * Устанавливает сообщение.
+     * Устанавливает ответ.
      *
-     * @param string $message Тема
+     * @param string $response
      *
-     * @return Sms
+     * @return SmsRequestLog
      */
-    public function setMessage($message)
+    public function setResponse($response)
     {
-        $this->message = $message;
+        $this->response = $response;
 
         return $this;
     }
 
     /**
-     * Возвращает сообщение.
+     * Возвращает ответ.
      *
      * @return string
      */
-    public function getMessage()
+    public function getResponse()
     {
-        return $this->message;
+        return $this->response;
     }
 
     /**
-     * Устанавливает имя отправителя.
+     * Устанавливает дату запроса.
      *
-     * @param string $fromName Имя отправителя
+     * @param \DateTime $requestAt
      *
-     * @return Sms
+     * @return SmsRequestLog
      */
-    public function setFromName($fromName)
+    public function setRequestAt($requestAt)
     {
-        $this->fromName = $fromName;
+        $this->requestAt = $requestAt;
 
         return $this;
     }
 
     /**
-     * Возвращает имя отправителя.
+     * Возвращает дату запроса.
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getFromName()
+    public function getRequestAt()
     {
-        return $this->fromName;
+        return $this->requestAt;
     }
 
     /**
-     * Устанавливает отправлено ли смс.
+     * Устанавливает дату ответа.
      *
-     * @param boolean $isSent
+     * @param \DateTime $responseAt
      *
-     * @return Sms
+     * @return SmsRequestLog
      */
-    public function setIsSent($isSent)
+    public function setResponseAt($responseAt)
     {
-        $this->isSent = $isSent;
+        $this->responseAt = $responseAt;
 
         return $this;
     }
 
     /**
-     * Возвращает отправлено ли смс.
+     * Возвращает дату ответа.
      *
-     * @return boolean
+     * @return \DateTime
      */
-    public function getIsSent()
+    public function getResponseAt()
     {
-        return $this->isSent;
+        return $this->responseAt;
     }
 
     /**
@@ -323,30 +305,6 @@ class Sms
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * Устанавливает дату отправки.
-     *
-     * @param \DateTime $sentAt
-     *
-     * @return Sms
-     */
-    public function setSentAt($sentAt)
-    {
-        $this->sentAt = $sentAt;
-
-        return $this;
-    }
-
-    /**
-     * Возвращает дату отправки.
-     *
-     * @return \DateTime
-     */
-    public function getSentAt()
-    {
-        return $this->sentAt;
     }
 
     /**

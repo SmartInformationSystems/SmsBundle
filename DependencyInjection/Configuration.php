@@ -20,6 +20,16 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('smart_information_systems_sms');
 
+        $rootNode->children()
+            ->arrayNode('transport')->children()
+                ->enumNode('type')->values(array('dummy', 'smsaero'))->isRequired()->end()
+                ->arrayNode('params')->children()
+                    ->scalarNode('username')->end()
+                    ->scalarNode('password')->end()
+                ->end()
+            ->end()
+        ->end();
+
         return $treeBuilder;
     }
 }
