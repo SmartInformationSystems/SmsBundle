@@ -64,6 +64,7 @@ class Sms
     {
         $sms = new SmsEntity();
         $sms
+            ->setTransport(get_class($this->transport))
             ->setFromName($fromName)
             ->setPhone($phone)
             ->setMessage(
