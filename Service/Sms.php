@@ -41,12 +41,13 @@ class Sms
      */
     public function __construct(ConfigurationContainer $configuration, ContainerInterface $container, EngineInterface $templating)
     {
+        $this->container = $container;
+        $this->templating = $templating;
+
         $this->transport = TransportFactory::create(
             $configuration,
             $this->container->get('doctrine')->getEntityManager()
         );
-        $this->container = $container;
-        $this->templating = $templating;
     }
 
     /**
