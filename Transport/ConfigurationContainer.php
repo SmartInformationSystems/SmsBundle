@@ -2,6 +2,8 @@
 
 namespace SmartInformationSystems\SmsBundle\Transport;
 
+use SmartInformationSystems\SmsBundle\Exception\TransportException;
+
 /**
  * Настройки транспорта.
  *
@@ -29,9 +31,15 @@ class ConfigurationContainer
      * @param array $config Конфиг
      *
      * @return ConfigurationContainer
+     *
+     * @throws TransportException
      */
     public function setConfig(array $config)
     {
+        if (empty($config)) {
+            throw new TransportException();
+        }
+
         $this->config = $config;
 
         return $this;
