@@ -1,4 +1,7 @@
 services:
+    smart_information_systems_sms.transport.configuration_container:
+        class: SmartInformationSystems\SmsBundle\Transport\ConfigurationContainer
+
     sis_sms:
         class: SmartInformationSystems\SmsBundle\Service\Sms
         arguments:
