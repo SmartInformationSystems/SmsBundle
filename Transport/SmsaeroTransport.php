@@ -113,4 +113,12 @@ class SmsaeroTransport extends AbstractTransport
     {
         return new SmsaeroResponse($request->getType(), $rawResponse);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'smsaero';
+    }
 }

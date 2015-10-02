@@ -163,4 +163,11 @@ abstract class AbstractTransport
      * @return AbstractResponse
      */
     abstract protected function createResponse(AbstractRequest $request, $rawResponse);
+
+    /**
+     * Возвращает название транспорта.
+     *
+     * @return string
+     */
+    abstract public function getName();
 }
