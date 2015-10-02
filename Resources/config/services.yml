@@ -5,6 +5,6 @@ services:
     sis_sms:
         class: SmartInformationSystems\SmsBundle\Service\Sms
         arguments:
-            - "@smart_information_systems_sms.transport.configuration_container"
-            - "@service_container"
-            - "@templating"
+            configuration: "@smart_information_systems_sms.transport.configuration_container"
+            container: "@service_container"
+            templating: "@templating"
