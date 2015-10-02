@@ -47,7 +47,7 @@ class Sms
      *
      * @var string
      *
-     * @ORM\Column(name="external_id", type="string", length=255, nullable=false)
+     * @ORM\Column(name="external_id", type="string", length=255, nullable=true)
      */
     private $externalId;
 
