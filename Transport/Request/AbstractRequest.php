@@ -55,6 +55,11 @@ abstract class AbstractRequest
      */
     public function __toString()
     {
-        return $this->url . '?' . implode('&', $this->params);
+        $queryString = array();
+        foreach ($this->params as $name => $value) {
+            $queryString[] = $name . '=' . urlencode($value);
+        }
+
+        return $this->url . '?' . implode('&', $queryString);
     }
 }
