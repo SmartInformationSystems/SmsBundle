@@ -82,7 +82,7 @@ class SmsaeroResponse extends AbstractResponse
     {
         $data = $this->getData();
         if (
-            !$this->getRequestType() == AbstractTransport::REQUEST_TYPE_SEND
+            $this->getRequestType() == AbstractTransport::REQUEST_TYPE_SEND
             && !empty($data->result)
             && $data->result == self::STATUS_SEND_REJECTED
         ) {

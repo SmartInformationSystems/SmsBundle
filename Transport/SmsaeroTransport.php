@@ -51,7 +51,6 @@ class SmsaeroTransport extends AbstractTransport
         $params = array(
             'to' => '7' . $sms->getPhone(),
             'text' => $sms->getMessage(),
-            'from' => $sms->getFromName(),
         );
 
         if ($sms->getFromName()) {
