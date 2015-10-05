@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use SmartInformationSystems\SmsBundle\Entity\Sms;
 use SmartInformationSystems\SmsBundle\Transport\AbstractTransport;
 
+use SmartInformationSystems\SmsBundle\Exception\NotAllowedPhoneTransportException;
+
 class SmsSendCommand extends ContainerAwareCommand
 {
     const LIMIT_DEFAULT = 100;
@@ -42,7 +44,10 @@ class SmsSendCommand extends ContainerAwareCommand
         )->getForSending($limit);
 
         foreach ($queue as $sms) {
-            $transport->send($sms);
+            try {
+                $transport->send($sms);
+            } catch (NotAllowedPhoneTransportException $e) {
+            }
         }
     }
 }

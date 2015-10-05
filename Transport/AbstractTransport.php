@@ -6,9 +6,11 @@ use Doctrine\ORM\EntityManager;
 
 use SmartInformationSystems\SmsBundle\Entity\Sms;
 use SmartInformationSystems\SmsBundle\Entity\SmsRequestLog;
-use SmartInformationSystems\SmsBundle\Exception\UnknownTransportParameterException;
 use SmartInformationSystems\SmsBundle\Transport\Request\AbstractRequest;
 use SmartInformationSystems\SmsBundle\Transport\Response\AbstractResponse;
+
+use SmartInformationSystems\SmsBundle\Exception\UnknownTransportParameterException;
+use SmartInformationSystems\SmsBundle\Exception\NotAllowedPhoneTransportException;
 
 /**
  * Абстрактный класс транспорта.
@@ -84,6 +86,18 @@ abstract class AbstractTransport
      */
     protected function doGetRequest(AbstractRequest $request, Sms $sms = NULL)
     {
+        if (
+            !empty($this->getParam('allowed_phones'))
+            && !in_array($sms->getPhone(), $this->getParam('allowed_phones'))
+        ) {
+            $sms->setIsSent(TRUE);
+            $sms->setLastError('not_allowed_phone');
+            $this->em->persist($sms);
+            $this->em->flush($sms);
+
+            throw new NotAllowedPhoneTransportException($sms->getPhone());
+        }
+
         $log = new SmsRequestLog();
         $log->setTransport($this->getName());
         $log->setRequest($request->__toString());
