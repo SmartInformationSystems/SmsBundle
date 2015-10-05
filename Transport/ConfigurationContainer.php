@@ -72,6 +72,13 @@ class ConfigurationContainer
      */
     public function getTransportParams()
     {
-        return $this->config['transport']['params'];
+        return array_merge(
+            array(
+                'allowed_phones' => !empty($this->config['allowed_phones'])
+                    ? $this->config['allowed_phones']
+                    : array(),
+            ),
+            $this->config['transport']['params']
+        );
     }
 }
