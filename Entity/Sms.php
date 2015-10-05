@@ -34,6 +34,15 @@ class Sms
     private $id;
 
     /**
+     * Транспорт.
+     *
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    private $transport;
+
+    /**
      * Идентификатор в транспорте.
      *
      * @var string
@@ -134,6 +143,29 @@ class Sms
         return $this->id;
     }
 
+    /**
+     * Устанавливает транспорт.
+     *
+     * @param string $transport
+     *
+     * @return Sms
+     */
+    public function setTransport($transport)
+    {
+        $this->transport = $transport;
+
+        return $this;
+    }
+
+    /**
+     * Возвращает транспорт.
+     *
+     * @return string
+     */
+    public function getTransport()
+    {
+        return $this->transport;
+    }
     /**
      * Устанавливает телефон получателя.
      *
