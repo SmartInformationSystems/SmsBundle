@@ -48,15 +48,21 @@ class SmsaeroTransport extends AbstractTransport
      */
     public function send(Sms $sms)
     {
+        $params = array(
+            'to' => '7' . $sms->getPhone(),
+            'text' => $sms->getMessage(),
+            'from' => $sms->getFromName(),
+        );
+
+        if ($sms->getFromName()) {
+            $params['from'] = $sms->getFromName();
+        }
+
         return $this->doGetRequest(
             $this->prepareRequest(
                 AbstractTransport::REQUEST_TYPE_SEND,
                 '/send/',
-                array(
-                    'to' => '7' . $sms->getPhone(),
-                    'text' => $sms->getMessage(),
-                    'from' => $sms->getFromName(),
-                )
+                $params
             ),
             $sms
         );

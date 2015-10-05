@@ -109,6 +109,7 @@ abstract class AbstractTransport
             switch ($request->getType()) {
                 case self::REQUEST_TYPE_SEND:
                     if ($response->isSuccess()) {
+                        $sms->setLastError(NULL);
                         $sms->setExternalId($response->getExternalId());
                         $sms->setIsSent(TRUE);
                         $sms->setSentAt(new \DateTime());

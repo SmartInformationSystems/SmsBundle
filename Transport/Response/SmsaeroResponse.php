@@ -9,6 +9,7 @@ use SmartInformationSystems\SmsBundle\Transport\AbstractTransport;
 class SmsaeroResponse extends AbstractResponse
 {
     const STATUS_SEND_ACCEPTED = 'accepted';
+    const STATUS_SEND_REJECTED = 'reject';
 
     /**
      * {@inheritdoc}
@@ -69,5 +70,22 @@ class SmsaeroResponse extends AbstractResponse
         }
 
         return $this->getData()->result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getError()
+    {
+        $data = $this->getData();
+        if (
+            !$this->getRequestType() == AbstractTransport::REQUEST_TYPE_SEND
+            && !empty($data->result)
+            && $data->result == self::STATUS_SEND_REJECTED
+        ) {
+            return empty($data->reason) ? 'EMPTY ERROR' : $data->reason;
+        }
+
+        return '';
     }
 }
