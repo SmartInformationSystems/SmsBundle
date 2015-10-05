@@ -116,8 +116,8 @@ abstract class AbstractTransport
                     } else {
                         $sms->setLastError($response->getError());
                     }
-                    $this->em->persist($log);
-                    $this->em->flush($log);
+                    $this->em->persist($sms);
+                    $this->em->flush($sms);
                     break;
             }
 

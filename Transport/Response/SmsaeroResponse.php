@@ -43,9 +43,12 @@ class SmsaeroResponse extends AbstractResponse
     public function isSuccess()
     {
         $data = $this->getData();
-        if (!empty($data->result)) {
-
+        switch ($this->getRequestType()) {
+            case AbstractTransport::REQUEST_TYPE_SEND:
+                return !empty($data->result) && $data->result == self::STATUS_SEND_ACCEPTED;
         }
+
+        return !empty($data);
     }
 
     /**
