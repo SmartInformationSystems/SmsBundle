@@ -34,7 +34,7 @@ class SmsSendCommand extends ContainerAwareCommand
         $limit = $input->getOption('limit') ? $input->getOption('limit') : self::LIMIT_DEFAULT;
 
         /** @var AbstractTransport $transport */
-        $transport = $this->getContainer()->get('sis_sms')->getTrasport();
+        $transport = $this->getContainer()->get('sis_sms')->getTransport();
 
         /** @var Sms[] $queue */
         $queue = $this->getContainer()->get('doctrine')->getRepository(
