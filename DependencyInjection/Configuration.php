@@ -21,6 +21,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('smart_information_systems_sms');
 
         $rootNode->children()
+            ->scalarNode('from')->isRequired()->end()
             ->arrayNode('allowed_phones')
                 ->prototype('scalar')->end()
             ->end()
@@ -29,7 +30,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('params')->children()
                     ->scalarNode('username')->end()
                     ->scalarNode('password')->end()
-                    ->scalarNode('from')->end()
                 ->end()
             ->end()
         ->end();

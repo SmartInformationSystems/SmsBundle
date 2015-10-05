@@ -37,12 +37,22 @@ class ConfigurationContainer
     public function setConfig(array $config)
     {
         if (empty($config)) {
-            throw new TransportException();
+            throw new TransportException('Нет настроек транспорта');
         }
 
         $this->config = $config;
 
         return $this;
+    }
+
+    /**
+     * Возвращает "от кого" для сообщений.
+     *
+     * @return string
+     */
+    public function getFrom()
+    {
+        return !empty($this->config['from']) ? $this->config['from'] : '';
     }
 
     /**

@@ -33,6 +33,13 @@ class Sms
     private $templating;
 
     /**
+     * От кого отправлять сообщения.
+     *
+     * @var string
+     */
+    private $defaultFrom;
+
+    /**
      * Конструктор.
      *
      * @param ConfigurationContainer $configuration
@@ -43,6 +50,8 @@ class Sms
     {
         $this->container = $container;
         $this->templating = $templating;
+
+        $this->defaultFrom = $configuration->getFrom();
 
         $this->transport = TransportFactory::create(
             $configuration,
@@ -65,7 +74,7 @@ class Sms
         $sms = new SmsEntity();
         $sms
             ->setTransport($this->getTransport()->getName())
-            ->setFromName($fromName)
+            ->setFromName($fromName ? $fromName : $this->defaultFrom)
             ->setPhone($phone)
             ->setMessage(
                 $this->templating->render(
