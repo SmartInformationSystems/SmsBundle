@@ -85,6 +85,7 @@ abstract class AbstractTransport
     protected function doGetRequest(AbstractRequest $request, Sms $sms = NULL)
     {
         $log = new SmsRequestLog();
+        $log->setTransport($this->getName());
         $log->setRequest($request->__toString());
         $log->setRequestAt(new \DateTime());
         if ($sms) {
@@ -111,17 +112,22 @@ abstract class AbstractTransport
                         $sms->setExternalId($response->getExternalId());
                         $sms->setIsSent(TRUE);
                         $sms->setSentAt(new \DateTime());
-                        $this->em->persist($log);
-                        $this->em->flush($log);
+                    } else {
+                        $sms->setLastError($response->getError());
                     }
+                    $this->em->persist($log);
+                    $this->em->flush($log);
                     break;
             }
 
             return $response;
 
         } catch (\Exception $e) {
+            $sms->setLastError($e->getMessage());
             $log->setResponse($e->__toString());
             $log->setResponseAt(new \DateTime());
+            $this->em->persist($sms);
+            $this->em->flush($sms);
             $this->em->persist($log);
             $this->em->flush($log);
 

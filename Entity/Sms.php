@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Смс в очереди на отправку.
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="SmartInformationSystems\SmsBundle\Repository\SmsRepository")
  * @ORM\Table(
  *   name="sis_sms",
  *   indexes={
@@ -32,15 +32,6 @@ class Sms
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * Тип транспорта.
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     */
-    private $transport;
 
     /**
      * Идентификатор в транспорте.
@@ -88,6 +79,24 @@ class Sms
     private $isSent;
 
     /**
+     * Последняя ошибка.
+     *
+     * @var string
+     *
+     * @ORM\Column(name="last_error", type="string", length=255, nullable=true)
+     */
+    private $lastError;
+
+    /**
+     * Дата отправки.
+     *
+     * @var \DateTime
+     *
+     * @ORM\Column(name="sent_at", type="datetime", nullable=true)
+     */
+    private $sentAt;
+
+    /**
      * Дата создания.
      *
      * @var \DateTime
@@ -104,15 +113,6 @@ class Sms
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
-
-    /**
-     * Дата отправки.
-     *
-     * @var \DateTime
-     *
-     * @ORM\Column(name="sent_at", type="datetime", nullable=true)
-     */
-    private $sentAt;
 
     /**
      * Конструктор.
@@ -156,30 +156,6 @@ class Sms
     public function getPhone()
     {
         return $this->phone;
-    }
-
-    /**
-     * Устанавливает транспорт.
-     *
-     * @param string $transport
-     *
-     * @return Sms
-     */
-    public function setTransport($transport)
-    {
-        $this->transport = $transport;
-
-        return $this;
-    }
-
-    /**
-     * Возвращает транспорт.
-     *
-     * @return string
-     */
-    public function getTransport()
-    {
-        return $this->transport;
     }
 
     /**
@@ -367,5 +343,29 @@ class Sms
     public function preUpdateHandler()
     {
         $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * Устанавливает последнюю ошибку.
+     *
+     * @param string $lastError
+     *
+     * @return Sms
+     */
+    public function setLastError($lastError)
+    {
+        $this->lastError = $lastError;
+
+        return $this;
+    }
+
+    /**
+     * Возвращает последнюю ошибку.
+     *
+     * @return string
+     */
+    public function getLastError()
+    {
+        return $this->lastError;
     }
 }
