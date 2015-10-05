@@ -28,6 +28,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('password')->end()
                 ->end()
             ->end()
+            ->arrayNode('allowed_phones')->end()
         ->end();
 
         return $treeBuilder;
