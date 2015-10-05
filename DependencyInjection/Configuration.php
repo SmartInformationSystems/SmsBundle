@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('params')->children()
                     ->scalarNode('username')->end()
                     ->scalarNode('password')->end()
+                    ->scalarNode('from')->end()
                 ->end()
             ->end()
         ->end();
