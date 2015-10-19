@@ -6,13 +6,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Doctrine\ORM\EntityManager;
 
-use \SmartInformationSystems\SmsBundle\Transport\AbstractTransport;
+use SmartInformationSystems\SmsBundle\Transport\AbstractTransport;
 use SmartInformationSystems\SmsBundle\Transport\TransportFactory;
 use SmartInformationSystems\SmsBundle\Transport\ConfigurationContainer;
 use SmartInformationSystems\SmsBundle\Entity\Sms as SmsEntity;
 
 /**
- * Класс для отправки смс.
+ * Сервис для отправки смс.
  *
  */
 class Sms
