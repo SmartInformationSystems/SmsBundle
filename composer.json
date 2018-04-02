@@ -15,7 +15,7 @@
         "MIT"
     ],
     "require" : {
-        "roave/security-advisories": "dev-master",
+        "roave/security-advisories": "dev-master"
     },
     "autoload" : {
         "psr-4" : { "SmartInformationSystems\\EmailBundle\\" : "" }
