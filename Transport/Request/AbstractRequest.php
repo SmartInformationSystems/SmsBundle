@@ -30,7 +30,7 @@ abstract class AbstractRequest
      * @param string $url Адрес запроса
      * @param array $params Параметры запроса
      */
-    public function __construct($type, $url, array $params = array())
+    public function __construct($type, $url, array $params = [])
     {
         $this->type = $type;
         $this->url = $url;
@@ -62,7 +62,7 @@ abstract class AbstractRequest
      */
     public function __toString()
     {
-        $queryString = array();
+        $queryString = [];
         foreach ($this->params as $name => $value) {
             $queryString[] = $name . '=' . urlencode($value);
         }

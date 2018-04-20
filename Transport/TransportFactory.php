@@ -27,6 +27,12 @@ class TransportFactory
     {
         if (empty(self::$transports[$config->getTransportType()])) {
             switch ($config->getTransportType()) {
+                case 'smsc':
+                    self::$transports[$config->getTransportType()] = new SmscTransport(
+                        $em,
+                        $config->getTransportParams()
+                    );
+                    break;
                 case '01sms':
                     self::$transports[$config->getTransportType()] = new Sms01Transport(
                         $em,

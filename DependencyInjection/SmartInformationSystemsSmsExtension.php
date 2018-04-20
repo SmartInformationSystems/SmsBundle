@@ -1,5 +1,4 @@
 <?php
-
 namespace SmartInformationSystems\SmsBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -7,11 +6,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-/**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
- */
 class SmartInformationSystemsSmsExtension extends Extension
 {
     /**
@@ -26,6 +20,6 @@ class SmartInformationSystemsSmsExtension extends Extension
         $loader->load('services.yml');
 
         $configurationContainer = $container->getDefinition('smart_information_systems_sms.transport.configuration_container');
-        $configurationContainer->addMethodCall('setConfig', array($config));
+        $configurationContainer->addMethodCall('setConfig', [$config]);
     }
 }
