@@ -165,6 +165,7 @@ abstract class AbstractTransport
             && !empty($this->getParam('allowed_phones'))
             && !in_array($sms->getPhone(), $this->getParam('allowed_phones'))
         ) {
+            $sms->setTransport($this->getName());
             $sms->setIsSent(true);
             $sms->setLastError('not_allowed_phone');
             $this->em->persist($sms);
@@ -172,6 +173,8 @@ abstract class AbstractTransport
 
             throw new NotAllowedPhoneTransportException($sms->getPhone());
         }
+
+        $sms->setTransport($this->getName());
 
         $log = new SmsRequestLog();
         $log->setTransport($this->getName());

@@ -20,7 +20,12 @@ class Configuration implements ConfigurationInterface
                 ->prototype('scalar')->end()
             ->end()
             ->arrayNode('transport')->isRequired()->children()
-                ->enumNode('type')->values(array('dummy', 'smsaero', '01sms'))->isRequired()->end()
+                ->enumNode('type')->values([
+                    'dummy',
+                    'smsaero',
+                    '01sms',
+                    'smsc',
+                ])->isRequired()->end()
                 ->arrayNode('params')->children()
                     ->scalarNode('username')->end()
                     ->scalarNode('password')->end()
