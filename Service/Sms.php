@@ -45,6 +45,8 @@ class Sms
      * @param ConfigurationContainer $configuration
      * @param ContainerInterface $container
      * @param EngineInterface $templating
+     *
+     * @throws
      */
     public function __construct(ConfigurationContainer $configuration, ContainerInterface $container, EngineInterface $templating)
     {
@@ -67,9 +69,11 @@ class Sms
      * @param array $templateVars Переменные шаблона
      * @param string $fromName От кого
      *
-     * @return Sms
+     * @return SmsEntity
+     *
+     * @throws
      */
-    public function send($phone, $template, array $templateVars = array(), $fromName = '')
+    public function send($phone, $template, array $templateVars = [], $fromName = '')
     {
         $sms = new SmsEntity();
         $sms
