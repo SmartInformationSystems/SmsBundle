@@ -1,5 +1,4 @@
 <?php
-
 namespace SmartInformationSystems\SmsBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

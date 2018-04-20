@@ -1,5 +1,4 @@
 <?php
-
 namespace SmartInformationSystems\SmsBundle\Transport;
 
 use Doctrine\ORM\EntityManager;
@@ -83,11 +82,14 @@ abstract class AbstractTransport
      * @param Sms $sms
      *
      * @return AbstractResponse
+     *
+     * @throws
      */
     protected function doGetRequest(AbstractRequest $request, Sms $sms = NULL)
     {
         if (
-            !empty($this->getParam('allowed_phones'))
+            $sms
+            && !empty($this->getParam('allowed_phones'))
             && !in_array($sms->getPhone(), $this->getParam('allowed_phones'))
         ) {
             $sms->setIsSent(TRUE);
@@ -130,7 +132,6 @@ abstract class AbstractTransport
                     } else {
                         $sms->setLastError($response->getError());
                     }
-                    $this->em->persist($sms);
                     $this->em->flush($sms);
                     break;
             }
@@ -141,9 +142,91 @@ abstract class AbstractTransport
             $sms->setLastError($e->getMessage());
             $log->setResponse($e->__toString());
             $log->setResponseAt(new \DateTime());
+            $this->em->persist($log);
+            $this->em->flush($sms);
+            $this->em->flush($log);
+
+            return NULL;
+        }
+    }
+
+    /**
+     * @param AbstractRequest $request
+     * @param Sms $sms
+     *
+     * @return AbstractResponse
+     *
+     * @throws
+     */
+    protected function doPostRequest(AbstractRequest $request, Sms $sms = null)
+    {
+        if (
+            $sms
+            && !empty($this->getParam('allowed_phones'))
+            && !in_array($sms->getPhone(), $this->getParam('allowed_phones'))
+        ) {
+            $sms->setIsSent(true);
+            $sms->setLastError('not_allowed_phone');
             $this->em->persist($sms);
             $this->em->flush($sms);
+
+            throw new NotAllowedPhoneTransportException($sms->getPhone());
+        }
+
+        $log = new SmsRequestLog();
+        $log->setTransport($this->getName());
+        $log->setRequest($request->__toString());
+        $log->setRequestAt(new \DateTime());
+        if ($sms) {
+            $log->setSms($sms);
+        }
+        $this->em->persist($log);
+
+        try {
+            $this->em->flush($log);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-type: text/xml; charset=utf-8']);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CRLF, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $request->__toString());
+            curl_setopt($ch, CURLOPT_URL, $request->getUrl());
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $response = $this->createResponse($request, $result);
+
+            $log->setResponse($response->__toString());
+            $log->setResponseAt(new \DateTime());
             $this->em->persist($log);
+            $this->em->flush($log);
+
+            switch ($request->getType()) {
+                case self::REQUEST_TYPE_SEND:
+                    if ($sms) {
+                        if ($response->isSuccess()) {
+                            $sms->setLastError(NULL);
+                            $sms->setExternalId($response->getExternalId());
+                            $sms->setIsSent(TRUE);
+                            $sms->setSentAt(new \DateTime());
+                        } else {
+                            $sms->setLastError($response->getError());
+                        }
+                        $this->em->flush($sms);
+                    }
+                    break;
+            }
+
+            return $response;
+
+        } catch (\Exception $e) {
+            if ($sms) {
+                $sms->setLastError($e->getMessage());
+                $this->em->flush($sms);
+            }
+            $log->setResponse($e->__toString());
+            $log->setResponseAt(new \DateTime());
             $this->em->flush($log);
 
             return NULL;
@@ -163,6 +246,8 @@ abstract class AbstractTransport
      * @param Sms $sms
      *
      * @return bool
+     *
+     * @throws
      */
     abstract public function send(Sms $sms);
 

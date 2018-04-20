@@ -1,5 +1,4 @@
 <?php
-
 namespace SmartInformationSystems\SmsBundle\Transport\Request;
 
 abstract class AbstractRequest
@@ -22,7 +21,7 @@ abstract class AbstractRequest
      *
      * @var array
      */
-    private $params;
+    protected $params;
 
     /**
      * Конструктор.
@@ -36,6 +35,14 @@ abstract class AbstractRequest
         $this->type = $type;
         $this->url = $url;
         $this->params = $params;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 
     /**
