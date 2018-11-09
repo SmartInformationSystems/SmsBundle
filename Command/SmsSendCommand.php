@@ -23,7 +23,7 @@ class SmsSendCommand extends ContainerAwareCommand
         $this
             ->setName('sis_sms:send')
             ->setDescription('Sending sms from queue')
-            ->addOption('limit', 100, InputOption::VALUE_OPTIONAL, 'Messages limit for sending')
+            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Messages limit for sending', 100)
         ;
     }
 
