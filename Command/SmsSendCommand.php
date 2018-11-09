@@ -1,6 +1,7 @@
 <?php
 namespace SmartInformationSystems\SmsBundle\Command;
 
+use SmartInformationSystems\SmsBundle\Repository\SmsRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +17,21 @@ class SmsSendCommand extends ContainerAwareCommand
     const LIMIT_DEFAULT = 100;
 
     /**
+     * @var AbstractTransport
+     */
+    private $transport;
+
+    /**
+     * @var SmsRepository
+     */
+    private $repository;
+
+    /**
+     * @var int
+     */
+    private $limit;
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -23,8 +39,18 @@ class SmsSendCommand extends ContainerAwareCommand
         $this
             ->setName('sis_sms:send')
             ->setDescription('Sending sms from queue')
-            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Messages limit for sending', 100)
+            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Messages limit for sending', self::LIMIT_DEFAULT)
         ;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->limit = $input->getOption('limit');
+        $this->transport = $this->getContainer()->get('sis_sms')->getTransport();
+        $this->repository = $this->getContainer()->get('doctrine')->getRepository(Sms::class);
     }
 
     /**
@@ -32,19 +58,11 @@ class SmsSendCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $limit = $input->getOption('limit') ? $input->getOption('limit') : self::LIMIT_DEFAULT;
-
-        /** @var AbstractTransport $transport */
-        $transport = $this->getContainer()->get('sis_sms')->getTransport();
-
-        /** @var Sms[] $queue */
-        $queue = $this->getContainer()->get('doctrine')->getRepository(
-            'SmartInformationSystems\SmsBundle\Entity\Sms'
-        )->getForSending($limit);
+        $queue = $this->repository->getForSending($this->limit);
 
         foreach ($queue as $sms) {
             try {
-                $transport->send($sms);
+                $this->transport->send($sms);
             } catch (NotAllowedPhoneTransportException $e) {
             }
         }
